@@ -20,10 +20,6 @@ class StockSerializer(serializers.ModelSerializer):
         fields = ('pk','customer', 'cust_number', 'symbol', 'name', 'shares', 'purchase_price', 'purchase_date')
 
 
-class FundSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Fund
-        fields = ('id','customer', 'cust_number', 'symbol', 'description', 'quantity', 'purchase_price', 'purchase_date')
 
 
 class UserSerializer(serializers.ModelSerializer):
