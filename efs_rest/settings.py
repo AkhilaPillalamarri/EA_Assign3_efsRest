@@ -141,7 +141,7 @@ JWT_AUTH = {
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }
 CORS_ORIGIN_WHITELIST = [
-    'https://focused-curran-ad620d.netlify.app',
+    'https://wizardly-lamport-7dc9ef.netlify.app',
     'http://127.0.0.1:8080'
 ]
 
