@@ -1,12 +1,11 @@
-from django.shortcuts import render
-
-# Create your views here.
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import *
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 
 @csrf_exempt
@@ -17,14 +16,12 @@ def customer_list(request):
         customers = Customer.objects.all()
         serializer = CustomerSerializer(customers, context={'request': request}, many=True)
         return Response({'data': serializer.data})
-
     elif request.method == 'POST':
         serializer = CustomerSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -40,14 +37,13 @@ def getCustomer(request, pk):
     if request.method == 'GET':
         serializer = CustomerSerializer(customer,context={'request': request})
         return Response(serializer.data)
-
     elif request.method == 'PUT':
-        serializer = CustomerSerializer(customer, data=request.data,context={'request': request})
+        serializer = CustomerSerializer(customer, data=request.data,context={'request':
+        request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     elif request.method == 'DELETE':
         customer.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -59,16 +55,15 @@ def investment_list(request):
     permission_classes = (IsAuthenticatedOrReadOnly)
     if request.method == 'GET':
         investment = Investment.objects.all()
-        serializer = InvestmentSerializer(investment, context={'request': request}, many=True)
+        serializer = InvestmentSerializer(investment, context={'request': request},
+        many=True)
         return Response({'data': serializer.data})
-
     elif request.method == 'POST':
         serializer = InvestmentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -80,18 +75,16 @@ def getInvestment(request, pk):
         investment = Investment.objects.get(pk=pk)
     except Investment.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     if request.method == 'GET':
         serializer = InvestmentSerializer(investment,context={'request': request})
         return Response(serializer.data)
-
     elif request.method == 'PUT':
-        serializer = InvestmentSerializer(investment, data=request.data,context={'request': request})
+        serializer = InvestmentSerializer(investment, data=request.data,context={'request':
+        request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     elif request.method == 'DELETE':
         investment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -105,15 +98,12 @@ def stock_list(request):
         stock = Stock.objects.all()
         serializer = StockSerializer(stock, context={'request': request}, many=True)
         return Response({'data': serializer.data})
-
     elif request.method == 'POST':
         serializer = StockSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def getStock(request, pk):
@@ -124,19 +114,63 @@ def getStock(request, pk):
         stock = Stock.objects.get(pk=pk)
     except Stock.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     if request.method == 'GET':
         serializer = StockSerializer(stock,context={'request': request})
         return Response(serializer.data)
-
     elif request.method == 'PUT':
         serializer = StockSerializer(stock, data=request.data,context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     elif request.method == 'DELETE':
         stock.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+@api_view(['POST'])
+@permission_classes((AllowAny,))
+def registerUser(request):
+    if request.method == 'POST':
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def fund_list(request):
+    permission_classes = (IsAuthenticatedOrReadOnly)
+    if request.method == 'GET':
+        fund = Fund.objects.all()
+        serializer = FundSerializer(fund, context={'request': request}, many=True)
+        return Response({'data': serializer.data})
+    elif request.method == 'POST':
+        serializer = FundSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def getFund(request, pk):
+    """
+    Retrieve, update or delete a customer instance.
+    """
+    try:
+        fund = Fund.objects.get(pk=pk)
+    except Fund.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        serializer = FundSerializer(fund,context={'request': request})
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        serializer = FundSerializer(fund, data=request.data,context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        fund.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

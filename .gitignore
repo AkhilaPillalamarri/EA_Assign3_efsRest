@@ -1,0 +1,14 @@
+/venv/
+.idea/
+*.pyc
+*~
+__pycache__
+venv/lib
+db.sqlite3
+/static
+.DS_Store
+/lib/
+/.idea/.gitignore
+../venv
+local_settings.py
+.idea
